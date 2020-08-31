@@ -2,7 +2,8 @@
 var playerChoice;
 var computerChoice;
 var reset = document.querySelector("#reset");
-var options = document.getElementsByClassName("options")
+var options = document.getElementsByClassName("options");
+var info = document.querySelector("#info");
 //Choose RPS using the buttons
 var rock = document.querySelector("#rock");
 var paper = document.querySelector("#paper");
@@ -19,28 +20,28 @@ var playerName = document.querySelector("#playerName");
 var aiName = document.querySelector("#aiName");
 
 //Functions : 
-//Choose the names for the players :
+
 //Player Name
 function choosePlayerName() {
     playerName.innerText = prompt("Choose a new name for yourself!");
 }
+
 //Enemy Name
 function chooseAiName() {
-    aiName.innerText = prompt("Choose a new name for your enemy!");
+    aiName.innerText = prompt("Choose a new name for your opponent!");
 }
 
-//Select the option and play the game
-//Rock
+//Choosing Rock
 function chooseRock() {
     playerChoice = "Rock";
     playGame();
 }
-//Paper
+//Choosing Paper
 function choosePaper() {
     playerChoice = "Paper";
     playGame();
 }
-//Scissors
+//Choosing Scissors
 function chooseScissors() {
     playerChoice = "Scissors";
     playGame();
@@ -49,45 +50,93 @@ function chooseScissors() {
 // The Actual Game Function
 function playGame() {
     //Choose a random item from the AI array to play the game
-//    computerChoice = choiceOfAI[Math.floor(Math.random() * 3)];
-    computerChoice = "Scissors";
-    //The initial IF statement for the winning condition | Add a point to the player score and update it in the HTML
-    if (playerChoice == "Rock" && computerChoice == "Scissors" || playerChoice == "Paper" && computerChoice == "Rock" || playerChoice == "Scissors" && computerChoice == "Paper") {
-        alert("You have chosen " + playerChoice + ". Your opponent chose " + computerChoice + ". You have won! Congratulation!");
-        playerScore++;
-        playerScoreDOM.innerText = playerScore;
-    } //The IF statement for draw
-    else if (playerChoice == computerChoice) {
-        alert("You have both chosen " + computerChoice + ". It was a draw!");
-    } // The last condition in case the player loses | Add a point to the enemy score and update it in the HTML
-    else {
-        alert("You have chosen " + playerChoice + ". Your opponent chose " + computerChoice + ". You have lost! I am sorry!");
-        aiScore++;
-        aiScoreDOM.innerText = aiScore + " ";
-    }
+    computerChoice = choiceOfAI[Math.floor(Math.random() * 3)];
+    //Check Choices
+    checkChoices(playerChoice, computerChoice);
     //Check to see if the player wins
     checkWinner();
 };
 
-
-//Function to check if one of the two players wins
+//Function to check which of the two players wins
 function checkWinner() {
     for (var i = 0; i < 100; i++) {
         if (playerScore == 5) {
-            alert("You have won!");
-            buttonsAppear();
+            info.innerText = "You have won!";
+            buttonsDisappear();
             break;
         } //Check to see if the AI wins
         else if (aiScore == 5) {
-            alert("You have lost");
-            buttonsAppear();
+            info.innerText = "You have lost";
+            buttonsDisappear();
             break;
         } else if (i == 100) {
-            alert("You have played too many games without a winner. It is a draw");
-            buttonsAppear();
+            info.innerText = "You have played too many games without a winner. It is a draw" ;
+            buttonsDisappear();
             break;
         }
     }
+}
+
+//Check the choices between players
+function checkChoices(playerChoice, computerChoice) {
+    //The initial IF statement for the winning condition | Add a point to the player score and update it in the HTML
+    if (playerChoice == "Rock" && computerChoice == "Scissors" || playerChoice == "Paper" && computerChoice == "Rock" || playerChoice == "Scissors" && computerChoice == "Paper") {
+        info.innerText = "You have chosen " + playerChoice + ". Your opponent chose " + computerChoice + ". You have won! Congratulation!";
+        playerScore++;
+        playerScoreDOM.innerText = playerScore;
+    } //The IF statement for draw
+    else if (playerChoice == computerChoice) {
+        info.innerText = "You have both chosen " + computerChoice + ". It was a draw!";
+    } // The last condition in case the player loses | Add a point to the enemy score and update it in the HTML
+    else {
+        info.innerText = "You have chosen " + playerChoice + ". Your opponent chose " + computerChoice + ". You have lost! I am sorry!";
+        aiScore++;
+        aiScoreDOM.innerText = aiScore + " ";
+    }
+
+}
+
+//Make the buttons dissapear
+function buttonsDisappear() {
+    fadeOut(rock);
+    fadeOut(paper);
+    fadeOut(scissors);
+}
+
+//Make buttons appear
+function buttonsAppear() {
+    fadeIn(rock);
+    fadeIn(paper);
+    fadeIn(scissors);
+}
+
+//The actual function to make the buttons dissapear
+function fadeOut(element) {
+    var op = 1;
+    var timer = setInterval(function () {
+        if (op <= 0.1) {
+            clearInterval(timer);
+            element.style.display = "none";
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 50);
+}
+
+//The actual function to make the buttons apear
+function fadeIn(element) {
+    element.style.display = "inline";
+    var op = 0.1;
+    var timer = setInterval(function () {
+        if (op >= 1) {
+            clearInterval(timer);
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op += op * 0.1;
+    }, 50)
+    info.innerText = "Click a button to start the game!";
 }
 
 //Function to reset the score 
@@ -96,21 +145,8 @@ function resetTheScore() {
     aiScore = 0;
     playerScoreDOM.innerText = playerScore;
     aiScoreDOM.innerText = aiScore + " ";
-    buttonsDisappear();    
+    buttonsAppear();
 }
-
-function buttonsAppear() {
-    rock.classList.add("options");
-    paper.classList.add("options");
-    scissors.classList.add("options");
-}
-
-function buttonsDisappear() {
-    rock.classList.remove("options");
-    paper.classList.remove("options");
-    scissors.classList.remove("options");
-}
-// Click Events : 
 
 //Choose names
 playerName.addEventListener("click", choosePlayerName)
