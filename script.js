@@ -148,6 +148,8 @@ function resetTheScore() {
     buttonsAppear();
 }
 
+//Click Events
+
 //Choose names
 playerName.addEventListener("click", choosePlayerName)
 aiName.addEventListener("click", chooseAiName)
